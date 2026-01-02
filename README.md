@@ -1,6 +1,6 @@
 # mySQL-tutorial
 
-#### `CREATE DATABSE`
+### `CREATE DATABSE`
   * SHOW DATABASES;
   * CREATE DATABASE IF NOT EXISTS 'db-name';
   * CREATE DATABASE IF NOT EXISTS nodejs; 
