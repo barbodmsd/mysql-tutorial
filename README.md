@@ -85,9 +85,3 @@ MODIFY COLUMN description VARCHAR(200);
 
 ---
 
-### ✅ Notes
-- Database and table names should not be wrapped in quotes
-- `utf8mb4` is recommended for full Unicode support (including emojis)
-- This format is suitable for GitHub README files
-🚀
-
