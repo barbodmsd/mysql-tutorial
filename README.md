@@ -16,5 +16,14 @@ title VARCHAR(100) NOT NULL,
 description VARCHAR(200) NOT NULL,
 summary TEXT
 );
+
+ * ALTER TABLE product
+ * ADD details VARCHAR(85);
+
+ * ALTER TABLE product
+ * DROP COLUMN  details;
+
+ * ALTER TABLE product
+ * MODIFY COLUMN description VARCHAR(200);
 ---
 
