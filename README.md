@@ -1,32 +1,33 @@
-
+حتماً 👍
+این نسخه **انگلیسی، تمیز و استاندارد برای README گیتهاب** هست و مستقیم می‌تونی کپی کنی
 # MySQL Tutorial
 
 ## 📦 Create Database
 
-نمایش دیتابیس‌ها:
+Show all databases:
 ```sql
 SHOW DATABASES;
 ````
 
-ساخت دیتابیس (در صورت عدم وجود):
+Create a database (if it does not exist):
 
 ```sql
 CREATE DATABASE IF NOT EXISTS nodejs;
 ```
 
-انتخاب دیتابیس:
+Select the database:
 
 ```sql
 USE nodejs;
 ```
 
-حذف دیتابیس (در صورت وجود):
+Drop a database (if it exists):
 
 ```sql
 DROP DATABASE IF EXISTS nodejs;
 ```
 
-ساخت دیتابیس با charset و collation مشخص:
+Create a database with a specific charset and collation:
 
 ```sql
 CREATE DATABASE IF NOT EXISTS nodejs
@@ -38,13 +39,13 @@ COLLATE utf8mb4_0900_ai_ci;
 
 ## 🧱 Create Table
 
-حذف جدول (در صورت وجود):
+Drop table if it exists:
 
 ```sql
 DROP TABLE IF EXISTS product;
 ```
 
-ساخت جدول `product`:
+Create `product` table:
 
 ```sql
 CREATE TABLE IF NOT EXISTS product (
@@ -59,21 +60,21 @@ CREATE TABLE IF NOT EXISTS product (
 
 ## ✏️ Alter Table
 
-اضافه کردن ستون جدید:
+Add a new column:
 
 ```sql
 ALTER TABLE product
 ADD details VARCHAR(85);
 ```
 
-حذف ستون:
+Drop a column:
 
 ```sql
 ALTER TABLE product
 DROP COLUMN details;
 ```
 
-تغییر نوع ستون:
+Modify a column type:
 
 ```sql
 ALTER TABLE product
@@ -84,15 +85,9 @@ MODIFY COLUMN description VARCHAR(200);
 
 ---
 
-### نکات کوچیک ولی حرفه‌ای ✨
-- اسم دیتابیس و جدول بدون `' '` نوشته می‌شه
-- `utf8mb4` بهترین انتخاب برای پشتیبانی کامل یونیکد (ایموجی 😄)
-- این ساختار برای README خیلی تمیز و قابل فهمه
+### ✅ Notes
+- Database and table names should not be wrapped in quotes
+- `utf8mb4` is recommended for full Unicode support (including emojis)
+- This format is suitable for GitHub README files
+🚀
 
-اگه بخوای:
-- نسخه **انگلیسی رسمی‌تر**
-- یا اضافه کردن **Index / Foreign Key / Example Insert**
-- یا مخصوص پروژه **Node.js + MySQL**
-
-بگو تا همونو برات آماده کنم 🔥
-```
