@@ -1,5 +1,3 @@
-حتماً 👍
-این نسخه **انگلیسی، تمیز و استاندارد برای README گیتهاب** هست و مستقیم می‌تونی کپی کنی
 # MySQL Tutorial
 
 ## 📦 Create Database
@@ -37,7 +35,9 @@ COLLATE utf8mb4_0900_ai_ci;
 
 ---
 
-## 🧱 Create Table
+## 🧱 Create Tables
+
+### Product Table
 
 Drop table if it exists:
 
@@ -53,6 +53,47 @@ CREATE TABLE IF NOT EXISTS product (
   title VARCHAR(100) NOT NULL,
   description VARCHAR(200) NOT NULL,
   summary TEXT
+);
+```
+
+---
+
+### City Table
+
+Drop table if it exists:
+
+```sql
+DROP TABLE IF EXISTS city;
+```
+
+Create `city` table:
+
+```sql
+CREATE TABLE IF NOT EXISTS city (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  name VARCHAR(20) DEFAULT 'city_name'
+);
+```
+
+---
+
+### Student Table
+
+Drop table if it exists:
+
+```sql
+DROP TABLE IF EXISTS student;
+```
+
+Create `student` table:
+
+```sql
+CREATE TABLE IF NOT EXISTS student (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  national_code VARCHAR(10) UNIQUE NOT NULL,
+  age INT NOT NULL DEFAULT 18,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CHECK (age >= 18)
 );
 ```
 
@@ -81,7 +122,15 @@ ALTER TABLE product
 MODIFY COLUMN description VARCHAR(200);
 ```
 
-
-
 ---
+
+## ✅ Notes
+
+* Column names use `snake_case` (recommended standard)
+* `AUTO_INCREMENT` values are not guaranteed to be sequential
+* `utf8mb4` is recommended for full Unicode support
+* `CHECK` constraints are supported in MySQL 8.0+
+
+
+
 
