@@ -10,19 +10,11 @@
 ---
 ## CREATE TABLE
  * DROP TABLE IF EXISTS product; 
- * CREATE TABLE IF NOT EXISTS product (
-id INT PRIMARY KEY AUTO_INCREMENT,
-title VARCHAR(100) NOT NULL,
-description VARCHAR(200) NOT NULL,
-summary TEXT
-);
-
+ * CREATE TABLE IF NOT EXISTS product (id INT PRIMARY KEY AUTO_INCREMENT,title VARCHAR(100) NOT NULL,description VARCHAR(200) NOT NULL,summary TEXT);
  * ALTER TABLE product
  * ADD details VARCHAR(85);
-
  * ALTER TABLE product
  * DROP COLUMN  details;
-
  * ALTER TABLE product
  * MODIFY COLUMN description VARCHAR(200);
 ---
