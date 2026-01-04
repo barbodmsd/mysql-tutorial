@@ -1,5 +1,15 @@
 # MySQL Tutorial
 
+1. Database & Tables
+2. Constraints & Data Types (ENUM, SET)
+3. CRUD
+4. Filtering & Sorting
+5. Subqueries
+6. Aggregate
+7. NULL handling
+8. Table data reset (DELETE vs TRUNCATE)
+9. Indexes
+
 ## 📦 Database Management
 
 ### Show all databases
@@ -85,6 +95,46 @@ CREATE TABLE IF NOT EXISTS student (
 
 ---
 
+## 🧱 Special Data Types
+
+### ENUM Example (Ticket Table)
+
+```sql
+CREATE TABLE IF NOT EXISTS ticket (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  title VARCHAR(20) NOT NULL,
+  description VARCHAR(50) NOT NULL,
+  status ENUM('pending', 'open', 'close') NOT NULL DEFAULT 'pending'
+);
+```
+
+---
+
+### SET Example (Student Courses)
+
+```sql
+CREATE TABLE student_course (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  course_list SET(
+    'NodeJS', 'NestJS', 'JS', 'NextJS',
+    'ReactJS', 'MongoDB'
+  )
+);
+```
+
+#### Insert SET values
+
+```sql
+INSERT INTO student_course (course_list)
+VALUES
+('NodeJS,NodeJS,NodeJS,MongoDB,JS,NestJS'),
+('NodeJS,NestJS,NestJS,MongoDB,JS,NestJS'),
+('NodeJS,ReactJS,ReactJS,MongoDB,JS,NestJS'),
+('JS,JS,JS,MongoDB,JS,JS');
+```
+
+---
+
 ## ✏️ Alter Table
 
 ### Add a column
@@ -112,18 +162,18 @@ MODIFY COLUMN description VARCHAR(200);
 
 ## 🧩 CRUD Operations
 
-### ➕ Insert Data
+### Insert Data
 
 ```sql
 INSERT INTO student (firstname, lastname, national_code, bio)
 VALUES
-  ('Barbod', 'Masoudi', '0123456789', 'MERN Developer'),
-  ('Elyas', 'Moludi', '12345678', 'Junior Developer');
+('Barbod', 'Masoudi', '0123456789', 'MERN Developer'),
+('Elyas', 'Moludi', '12345678', 'Junior Developer');
 ```
 
 ---
 
-### 🔍 Select Data
+### Select Data
 
 ```sql
 SELECT * FROM student;
@@ -131,7 +181,7 @@ SELECT * FROM student;
 
 ---
 
-### ✏️ Update Data
+### Update Data
 
 ```sql
 UPDATE student
@@ -141,21 +191,30 @@ WHERE lastname = 'Moludi';
 
 ---
 
-### ❌ Delete Data
+### Delete Data
 
 ```sql
-DELETE FROM student
-WHERE id > 2 AND id < 4;
-
 DELETE FROM student
 WHERE id = 2;
 ```
 
 ---
 
+## 🗑️ DELETE vs TRUNCATE
+
+```sql
+DELETE FROM student_course;
+```
+
+```sql
+TRUNCATE TABLE student_course;
+```
+
+---
+
 ## 🔎 Filtering Data (WHERE)
 
-### Comparison operators
+### Comparison
 
 ```sql
 SELECT * FROM student
@@ -164,7 +223,7 @@ WHERE age >= 25 AND age <= 30;
 
 ---
 
-### LIKE (Pattern matching)
+### LIKE
 
 ```sql
 SELECT * FROM student
@@ -211,18 +270,15 @@ WHERE age IN (
 ## 📊 Sorting Data (ORDER BY)
 
 ```sql
-SELECT * FROM student
-ORDER BY age ASC;
+SELECT * FROM student ORDER BY age ASC;
 ```
 
 ```sql
-SELECT * FROM student
-ORDER BY age DESC;
+SELECT * FROM student ORDER BY age DESC;
 ```
 
 ```sql
-SELECT * FROM student
-ORDER BY firstname ASC;
+SELECT * FROM student ORDER BY firstname ASC;
 ```
 
 ---
@@ -251,27 +307,15 @@ ORDER BY age;
 
 ```sql
 SELECT MIN(age) FROM student;
-```
-
-```sql
 SELECT MAX(age) FROM student;
-```
-
-```sql
 SELECT SUM(age) FROM student;
-```
-
-```sql
 SELECT AVG(age) FROM student;
-```
-
-```sql
 SELECT COUNT(id) FROM student;
 ```
 
 ---
 
-## 🧩 NULL Handling Functions
+## 🧩 NULL Handling
 
 ### IFNULL
 
@@ -289,14 +333,41 @@ FROM student;
 
 ---
 
+## 🚀 Indexes (Performance)
+
+### Create table with index
+
+```sql
+CREATE TABLE contact (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  fullname VARCHAR(50) NOT NULL,
+  mobile VARCHAR(20),
+  INDEX (fullname)
+);
+```
+
+### Create index
+
+```sql
+CREATE INDEX idx_mobile ON contact(mobile);
+```
+
+### Drop index
+
+```sql
+DROP INDEX idx_mobile ON contact;
+```
+
+---
+
 ## ✅ Notes
 
-* Use `snake_case` for table and column names
-* `AUTO_INCREMENT` values are not guaranteed to be sequential
-* Always use `WHERE` with `UPDATE` and `DELETE`
-* `utf8mb4` is recommended for full Unicode support
-* `CHECK` constraints are supported in MySQL 8.0+
-* `LIKE`, `BETWEEN`, `IN` are used for filtering data
-* `ANY` and `ALL` are used with subqueries
-* `IFNULL` and `COALESCE` help handle `NULL` values
-* `ORDER BY` sorts query results
+* Use `snake_case` naming convention
+* `ENUM` → single value
+* `SET` → multiple values
+* `TRUNCATE` is faster than `DELETE` but irreversible
+* Indexes improve read performance
+* `IFNULL` and `COALESCE` handle `NULL` values
+* `ANY` / `ALL` are used with subqueries
+
+
