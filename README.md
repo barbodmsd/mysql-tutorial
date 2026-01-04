@@ -1,42 +1,33 @@
+
 # MySQL Tutorial
 
-1. Database & Tables
-2. Constraints & Data Types (ENUM, SET)
-3. CRUD
-4. Filtering & Sorting
-5. Subqueries
-6. Aggregate
-7. NULL handling
-8. Table data reset (DELETE vs TRUNCATE)
-9. Indexes
+## 📑 Table of Contents
+
+* [Database Management](#-database-management)
+* [Tables](#-tables)
+* [Special Data Types (ENUM, SET)](#-special-data-types-enum-set)
+* [Alter Table](#️-alter-table)
+* [CRUD Operations](#-crud-operations)
+* [DELETE vs TRUNCATE](#️-delete-vs-truncate)
+* [Filtering Data (WHERE)](#-filtering-data-where)
+* [Sorting Data (ORDER-by)](#-sorting-data-order-by)
+* [Subqueries (IN, ANY, ALL)](#-subqueries-in-any-all)
+* [Aggregate Functions](#-aggregate-functions)
+* [NULL Handling](#-null-handling)
+* [Triggers](#-triggers)
+* [Indexes & Performance](#-indexes--performance)
+* [Notes](#-notes)
+
+---
 
 ## 📦 Database Management
 
-### Show all databases
-
 ```sql
 SHOW DATABASES;
-```
-
-### Create a database if it doesn't exist
-
-```sql
 CREATE DATABASE IF NOT EXISTS nodejs;
-```
-
-### Select a database
-
-```sql
 USE nodejs;
-```
-
-### Drop a database if it exists
-
-```sql
 DROP DATABASE IF EXISTS nodejs;
 ```
-
-### Create a database with specific charset and collation
 
 ```sql
 CREATE DATABASE IF NOT EXISTS nodejs
@@ -48,12 +39,12 @@ COLLATE utf8mb4_0900_ai_ci;
 
 ## 🧱 Tables
 
-### Product Table
+### Product
 
 ```sql
 DROP TABLE IF EXISTS product;
 
-CREATE TABLE IF NOT EXISTS product (
+CREATE TABLE product (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
   description VARCHAR(200) NOT NULL,
@@ -63,12 +54,12 @@ CREATE TABLE IF NOT EXISTS product (
 
 ---
 
-### City Table
+### City
 
 ```sql
 DROP TABLE IF EXISTS city;
 
-CREATE TABLE IF NOT EXISTS city (
+CREATE TABLE city (
   id INT PRIMARY KEY AUTO_INCREMENT,
   name VARCHAR(20) DEFAULT 'city_name'
 );
@@ -76,12 +67,12 @@ CREATE TABLE IF NOT EXISTS city (
 
 ---
 
-### Student Table
+### Student
 
 ```sql
 DROP TABLE IF EXISTS student;
 
-CREATE TABLE IF NOT EXISTS student (
+CREATE TABLE student (
   id INT PRIMARY KEY AUTO_INCREMENT,
   firstname VARCHAR(50),
   lastname VARCHAR(50),
@@ -95,93 +86,71 @@ CREATE TABLE IF NOT EXISTS student (
 
 ---
 
-## 🧱 Special Data Types
+## 🧱 Special Data Types (ENUM, SET)
 
-### ENUM Example (Ticket Table)
+### ENUM – Ticket Status
 
 ```sql
-CREATE TABLE IF NOT EXISTS ticket (
+CREATE TABLE ticket (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(20) NOT NULL,
   description VARCHAR(50) NOT NULL,
-  status ENUM('pending', 'open', 'close') NOT NULL DEFAULT 'pending'
+  status ENUM('pending','open','close') DEFAULT 'pending'
 );
 ```
 
 ---
 
-### SET Example (Student Courses)
+### SET – Student Courses
 
 ```sql
 CREATE TABLE student_course (
   id INT PRIMARY KEY AUTO_INCREMENT,
   course_list SET(
-    'NodeJS', 'NestJS', 'JS', 'NextJS',
-    'ReactJS', 'MongoDB'
+    'NodeJS','NestJS','JS','NextJS','ReactJS','MongoDB'
   )
 );
 ```
 
-#### Insert SET values
-
 ```sql
 INSERT INTO student_course (course_list)
 VALUES
-('NodeJS,NodeJS,NodeJS,MongoDB,JS,NestJS'),
-('NodeJS,NestJS,NestJS,MongoDB,JS,NestJS'),
-('NodeJS,ReactJS,ReactJS,MongoDB,JS,NestJS'),
-('JS,JS,JS,MongoDB,JS,JS');
+('NodeJS,NodeJS,MongoDB,JS'),
+('NodeJS,NestJS,MongoDB'),
+('ReactJS,JS,MongoDB'),
+('JS,JS,JS');
 ```
 
 ---
 
 ## ✏️ Alter Table
 
-### Add a column
-
 ```sql
-ALTER TABLE product
-ADD details VARCHAR(85);
-```
-
-### Drop a column
-
-```sql
-ALTER TABLE product
-DROP COLUMN details;
-```
-
-### Modify a column
-
-```sql
-ALTER TABLE product
-MODIFY COLUMN description VARCHAR(200);
+ALTER TABLE product ADD details VARCHAR(85);
+ALTER TABLE product DROP COLUMN details;
+ALTER TABLE product MODIFY description VARCHAR(200);
 ```
 
 ---
 
 ## 🧩 CRUD Operations
 
-### Insert Data
+### Insert
 
 ```sql
 INSERT INTO student (firstname, lastname, national_code, bio)
 VALUES
-('Barbod', 'Masoudi', '0123456789', 'MERN Developer'),
-('Elyas', 'Moludi', '12345678', 'Junior Developer');
+('Barbod','Masoudi','0123456789','MERN Developer'),
+('Elyas','Moludi','12345678','Junior Developer');
 ```
 
----
-
-### Select Data
+### Select
 
 ```sql
 SELECT * FROM student;
 ```
 
----
-
-### Update Data
+### Update
 
 ```sql
 UPDATE student
@@ -189,13 +158,10 @@ SET age = 19
 WHERE lastname = 'Moludi';
 ```
 
----
-
-### Delete Data
+### Delete
 
 ```sql
-DELETE FROM student
-WHERE id = 2;
+DELETE FROM student WHERE id = 2;
 ```
 
 ---
@@ -204,9 +170,6 @@ WHERE id = 2;
 
 ```sql
 DELETE FROM student_course;
-```
-
-```sql
 TRUNCATE TABLE student_course;
 ```
 
@@ -214,55 +177,16 @@ TRUNCATE TABLE student_course;
 
 ## 🔎 Filtering Data (WHERE)
 
-### Comparison
-
 ```sql
-SELECT * FROM student
-WHERE age >= 25 AND age <= 30;
-```
-
----
-
-### LIKE
-
-```sql
-SELECT * FROM student
-WHERE firstname LIKE '%b%';
+SELECT * FROM student WHERE age BETWEEN 25 AND 30;
 ```
 
 ```sql
-SELECT * FROM student
-WHERE city LIKE 'mashh_%';
+SELECT * FROM student WHERE firstname LIKE '%b%';
 ```
 
----
-
-### BETWEEN
-
 ```sql
-SELECT * FROM student
-WHERE age BETWEEN 25 AND 30;
-```
-
----
-
-### IN
-
-```sql
-SELECT * FROM student
-WHERE city IN ('Mashhad', 'Tehran', 'Qom');
-```
-
----
-
-### Subquery with IN
-
-```sql
-SELECT * FROM student
-WHERE age IN (
-  SELECT age FROM student
-  WHERE age BETWEEN 25 AND 30
-);
+SELECT * FROM student WHERE city IN ('Mashhad','Tehran','Qom');
 ```
 
 ---
@@ -271,34 +195,27 @@ WHERE age IN (
 
 ```sql
 SELECT * FROM student ORDER BY age ASC;
-```
-
-```sql
 SELECT * FROM student ORDER BY age DESC;
-```
-
-```sql
 SELECT * FROM student ORDER BY firstname ASC;
 ```
 
 ---
 
-## 🧠 Subqueries with ANY & ALL
-
-### ANY
+## 🧠 Subqueries (IN, ANY, ALL)
 
 ```sql
 SELECT * FROM student
-WHERE age < ANY (SELECT age FROM user)
-ORDER BY age;
+WHERE age IN (SELECT age FROM student WHERE age BETWEEN 25 AND 30);
 ```
 
-### ALL
+```sql
+SELECT * FROM student
+WHERE age < ANY (SELECT age FROM user);
+```
 
 ```sql
 SELECT * FROM student
-WHERE age < ALL (SELECT age FROM user)
-ORDER BY age;
+WHERE age < ALL (SELECT age FROM user);
 ```
 
 ---
@@ -317,25 +234,61 @@ SELECT COUNT(id) FROM student;
 
 ## 🧩 NULL Handling
 
-### IFNULL
-
 ```sql
-SELECT id, firstname, lastname, age + IFNULL(bio, 1000)
-FROM student;
-```
-
-### COALESCE
-
-```sql
-SELECT id, firstname, lastname, age + COALESCE(bio, 1000)
-FROM student;
+SELECT age + IFNULL(bio,1000) FROM student;
+SELECT age + COALESCE(bio,1000) FROM student;
 ```
 
 ---
 
-## 🚀 Indexes (Performance)
+## 🔥 Triggers
 
-### Create table with index
+### BEFORE INSERT Trigger
+
+```sql
+CREATE TRIGGER before_insert_user
+BEFORE INSERT ON user
+FOR EACH ROW
+BEGIN
+  IF NEW.city IS NULL THEN
+    SET NEW.city = 'Tehran';
+  END IF;
+END;
+```
+
+---
+
+### AFTER INSERT Trigger
+
+```sql
+CREATE TRIGGER after_insert_user
+AFTER INSERT ON user
+FOR EACH ROW
+BEGIN
+  INSERT INTO student(age)
+  VALUES (NEW.age);
+END;
+```
+
+---
+
+### AFTER UPDATE Trigger (Validation)
+
+```sql
+CREATE TRIGGER after_update_user
+AFTER UPDATE ON user
+FOR EACH ROW
+BEGIN
+  IF (NEW.age > OLD.age) THEN
+    SIGNAL SQLSTATE '45000'
+    SET MESSAGE_TEXT = 'new age is bigger than old one.';
+  END IF;
+END;
+```
+
+---
+
+## 🚀 Indexes & Performance
 
 ```sql
 CREATE TABLE contact (
@@ -346,15 +299,8 @@ CREATE TABLE contact (
 );
 ```
 
-### Create index
-
 ```sql
 CREATE INDEX idx_mobile ON contact(mobile);
-```
-
-### Drop index
-
-```sql
 DROP INDEX idx_mobile ON contact;
 ```
 
@@ -362,12 +308,12 @@ DROP INDEX idx_mobile ON contact;
 
 ## ✅ Notes
 
-* Use `snake_case` naming convention
-* `ENUM` → single value
+* `ENUM` → one value
 * `SET` → multiple values
-* `TRUNCATE` is faster than `DELETE` but irreversible
-* Indexes improve read performance
-* `IFNULL` and `COALESCE` handle `NULL` values
-* `ANY` / `ALL` are used with subqueries
+* `TRIGGER` runs automatically on INSERT / UPDATE / DELETE
+* `BEFORE` → data validation
+* `AFTER` → logging / side effects
+* `SIGNAL` is used to throw custom errors
+* Indexes improve SELECT performance
 
 
