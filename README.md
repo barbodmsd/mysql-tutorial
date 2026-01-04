@@ -40,15 +40,9 @@ COLLATE utf8mb4_0900_ai_ci;
 
 ### Product Table
 
-#### Drop table if exists
-
 ```sql
 DROP TABLE IF EXISTS product;
-```
 
-#### Create table
-
-```sql
 CREATE TABLE IF NOT EXISTS product (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
@@ -149,50 +143,82 @@ WHERE lastname = 'Moludi';
 
 ### ❌ Delete Data
 
-#### Delete by range
-
 ```sql
 DELETE FROM student
 WHERE id > 2 AND id < 4;
-```
 
-#### Delete by specific ID
-
-```sql
 DELETE FROM student
 WHERE id = 2;
 ```
 
 ---
 
-## 🔎 Query with Conditions (WHERE)
+## 🔎 Filtering Data (WHERE)
 
-### Filter by range
+### Comparison operators
 
 ```sql
 SELECT * FROM student
 WHERE age >= 25 AND age <= 30;
 ```
 
-### Filter by NOT condition
+---
+
+### LIKE (Pattern matching)
 
 ```sql
 SELECT * FROM student
-WHERE NOT city = 'Mashhad' AND NOT city = 'Tehran';
+WHERE firstname LIKE '%b%';
+```
+
+```sql
+SELECT * FROM student
+WHERE city LIKE 'mashh_%';
+```
+
+---
+
+### BETWEEN
+
+```sql
+SELECT * FROM student
+WHERE age BETWEEN 25 AND 30;
+```
+
+---
+
+### IN
+
+```sql
+SELECT * FROM student
+WHERE city IN ('Mashhad', 'Tehran', 'Qom');
+```
+
+---
+
+### Subquery with IN
+
+```sql
+SELECT * FROM student
+WHERE age IN (
+  SELECT age FROM student
+  WHERE age BETWEEN 25 AND 30
+);
 ```
 
 ---
 
 ## 📊 Sorting Data (ORDER BY)
 
-### Sort by age descending
+```sql
+SELECT * FROM student
+ORDER BY age ASC;
+```
 
 ```sql
 SELECT * FROM student
 ORDER BY age DESC;
 ```
-
-### Sort by firstname ascending
 
 ```sql
 SELECT * FROM student
@@ -201,33 +227,43 @@ ORDER BY firstname ASC;
 
 ---
 
-## 🧮 Aggregate Functions
+## 🧠 Subqueries with ANY & ALL
 
-### Minimum age
+### ANY
+
+```sql
+SELECT * FROM student
+WHERE age < ANY (SELECT age FROM user)
+ORDER BY age;
+```
+
+### ALL
+
+```sql
+SELECT * FROM student
+WHERE age < ALL (SELECT age FROM user)
+ORDER BY age;
+```
+
+---
+
+## 🧮 Aggregate Functions
 
 ```sql
 SELECT MIN(age) FROM student;
 ```
 
-### Maximum age
-
 ```sql
 SELECT MAX(age) FROM student;
 ```
-
-### Sum of ages
 
 ```sql
 SELECT SUM(age) FROM student;
 ```
 
-### Average age
-
 ```sql
 SELECT AVG(age) FROM student;
 ```
-
-### Count of students
 
 ```sql
 SELECT COUNT(id) FROM student;
@@ -235,13 +271,32 @@ SELECT COUNT(id) FROM student;
 
 ---
 
+## 🧩 NULL Handling Functions
+
+### IFNULL
+
+```sql
+SELECT id, firstname, lastname, age + IFNULL(bio, 1000)
+FROM student;
+```
+
+### COALESCE
+
+```sql
+SELECT id, firstname, lastname, age + COALESCE(bio, 1000)
+FROM student;
+```
+
+---
+
 ## ✅ Notes
 
-* Use `snake_case` for table and column names (recommended standard)
+* Use `snake_case` for table and column names
 * `AUTO_INCREMENT` values are not guaranteed to be sequential
-* Always use `WHERE` in `UPDATE` and `DELETE` statements
+* Always use `WHERE` with `UPDATE` and `DELETE`
 * `utf8mb4` is recommended for full Unicode support
 * `CHECK` constraints are supported in MySQL 8.0+
-* Aggregate functions (`MIN`, `MAX`, `SUM`, `AVG`, `COUNT`) are used to calculate on columns
-* `ORDER BY` is used to sort query results
-
+* `LIKE`, `BETWEEN`, `IN` are used for filtering data
+* `ANY` and `ALL` are used with subqueries
+* `IFNULL` and `COALESCE` help handle `NULL` values
+* `ORDER BY` sorts query results
