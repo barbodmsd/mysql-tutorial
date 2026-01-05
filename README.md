@@ -490,3 +490,9 @@ END;
 * Triggers run **BEFORE/AFTER INSERT/UPDATE/DELETE**
 * Indexes speed up SELECT but slow INSERT/UPDATE
 
+---
+
+## 👑 Author
+
+Built with ❤️ by **Barbod Masoudi**
+
