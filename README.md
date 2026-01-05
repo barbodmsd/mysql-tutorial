@@ -1,5 +1,4 @@
-
-# MySQL Tutorial
+# 📘 MySQL Tutorial
 
 ## 📑 Table of Contents
 
@@ -10,10 +9,12 @@
 * [CRUD Operations](#-crud-operations)
 * [DELETE vs TRUNCATE](#️-delete-vs-truncate)
 * [Filtering Data (WHERE)](#-filtering-data-where)
-* [Sorting Data (ORDER-by)](#-sorting-data-order-by)
+* [Sorting Data (ORDER BY)](#-sorting-data-order-by)
 * [Subqueries (IN, ANY, ALL)](#-subqueries-in-any-all)
 * [Aggregate Functions](#-aggregate-functions)
 * [NULL Handling](#-null-handling)
+* [Foreign Keys & Relationships](#-foreign-keys--relationships)
+* [JOINs (INNER, LEFT, RIGHT, OUTER)](#-joins-inner-left-right-outer)
 * [Triggers](#-triggers)
 * [Indexes & Performance](#-indexes--performance)
 * [Notes](#-notes)
@@ -39,48 +40,91 @@ COLLATE utf8mb4_0900_ai_ci;
 
 ## 🧱 Tables
 
+### User
+
+```sql
+CREATE TABLE user (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  fullname VARCHAR(20) NOT NULL,
+  username VARCHAR(20) NOT NULL,
+  password VARCHAR(20) NOT NULL
+);
+```
+
+---
+
+### Profile (One-to-One)
+
+```sql
+CREATE TABLE profile (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  age INT,
+  bio TEXT,
+  city VARCHAR(30),
+  image VARCHAR(150) DEFAULT 'default.png',
+  bg_image VARCHAR(150),
+  user_id INT NOT NULL UNIQUE,
+  FOREIGN KEY (user_id) REFERENCES user(id)
+);
+```
+
+---
+
 ### Product
 
 ```sql
-DROP TABLE IF EXISTS product;
-
 CREATE TABLE product (
   id INT PRIMARY KEY AUTO_INCREMENT,
   title VARCHAR(100) NOT NULL,
-  description VARCHAR(200) NOT NULL,
-  summary TEXT
+  description TEXT,
+  price DOUBLE NOT NULL,
+  count INT DEFAULT 0
 );
 ```
 
 ---
 
-### City
+### Order (One-to-Many)
 
 ```sql
-DROP TABLE IF EXISTS city;
-
-CREATE TABLE city (
+CREATE TABLE `order` (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  name VARCHAR(20) DEFAULT 'city_name'
+  amount DOUBLE NOT NULL,
+  status ENUM('pending','cancel','finished') DEFAULT 'pending',
+  user_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES user(id)
 );
 ```
 
 ---
 
-### Student
+### Payment
 
 ```sql
-DROP TABLE IF EXISTS student;
-
-CREATE TABLE student (
+CREATE TABLE payment (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  firstname VARCHAR(50),
-  lastname VARCHAR(50),
-  national_code VARCHAR(10) UNIQUE NOT NULL,
-  bio TEXT,
-  age INT NOT NULL DEFAULT 18,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  CHECK (age >= 18)
+  amount DOUBLE NOT NULL,
+  invoice_number VARCHAR(20),
+  status TINYINT DEFAULT 0,
+  description VARCHAR(150),
+  user_id INT NOT NULL,
+  order_id INT NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES user(id),
+  FOREIGN KEY (order_id) REFERENCES `order`(id)
+);
+```
+
+---
+
+### Order Items (Many-to-Many)
+
+```sql
+CREATE TABLE order_items (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  product_id INT NOT NULL,
+  order_id INT NOT NULL,
+  FOREIGN KEY (product_id) REFERENCES product(id),
+  FOREIGN KEY (order_id) REFERENCES `order`(id)
 );
 ```
 
@@ -88,37 +132,23 @@ CREATE TABLE student (
 
 ## 🧱 Special Data Types (ENUM, SET)
 
-### ENUM – Ticket Status
+### ENUM
 
 ```sql
 CREATE TABLE ticket (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  title VARCHAR(20) NOT NULL,
-  description VARCHAR(50) NOT NULL,
+  title VARCHAR(20),
   status ENUM('pending','open','close') DEFAULT 'pending'
 );
 ```
 
----
-
-### SET – Student Courses
+### SET
 
 ```sql
 CREATE TABLE student_course (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  course_list SET(
-    'NodeJS','NestJS','JS','NextJS','ReactJS','MongoDB'
-  )
+  course_list SET('NodeJS','NestJS','JS','NextJS','ReactJS','MongoDB')
 );
-```
-
-```sql
-INSERT INTO student_course (course_list)
-VALUES
-('NodeJS,NodeJS,MongoDB,JS'),
-('NodeJS,NestJS,MongoDB'),
-('ReactJS,JS,MongoDB'),
-('JS,JS,JS');
 ```
 
 ---
@@ -135,33 +165,21 @@ ALTER TABLE product MODIFY description VARCHAR(200);
 
 ## 🧩 CRUD Operations
 
-### Insert
-
 ```sql
-INSERT INTO student (firstname, lastname, national_code, bio)
-VALUES
-('Barbod','Masoudi','0123456789','MERN Developer'),
-('Elyas','Moludi','12345678','Junior Developer');
+INSERT INTO user (fullname,username,password)
+VALUES ('Ali','ali_dev','1234');
 ```
 
-### Select
-
 ```sql
-SELECT * FROM student;
+SELECT * FROM user;
 ```
 
-### Update
-
 ```sql
-UPDATE student
-SET age = 19
-WHERE lastname = 'Moludi';
+UPDATE user SET fullname='Ali Dev' WHERE id=1;
 ```
 
-### Delete
-
 ```sql
-DELETE FROM student WHERE id = 2;
+DELETE FROM user WHERE id=1;
 ```
 
 ---
@@ -178,15 +196,15 @@ TRUNCATE TABLE student_course;
 ## 🔎 Filtering Data (WHERE)
 
 ```sql
-SELECT * FROM student WHERE age BETWEEN 25 AND 30;
+SELECT * FROM user WHERE fullname LIKE '%a%';
 ```
 
 ```sql
-SELECT * FROM student WHERE firstname LIKE '%b%';
+SELECT * FROM user WHERE id BETWEEN 1 AND 10;
 ```
 
 ```sql
-SELECT * FROM student WHERE city IN ('Mashhad','Tehran','Qom');
+SELECT * FROM user WHERE id IN (1,2,3);
 ```
 
 ---
@@ -194,9 +212,8 @@ SELECT * FROM student WHERE city IN ('Mashhad','Tehran','Qom');
 ## 📊 Sorting Data (ORDER BY)
 
 ```sql
-SELECT * FROM student ORDER BY age ASC;
-SELECT * FROM student ORDER BY age DESC;
-SELECT * FROM student ORDER BY firstname ASC;
+SELECT * FROM user ORDER BY fullname ASC;
+SELECT * FROM user ORDER BY id DESC;
 ```
 
 ---
@@ -204,18 +221,18 @@ SELECT * FROM student ORDER BY firstname ASC;
 ## 🧠 Subqueries (IN, ANY, ALL)
 
 ```sql
-SELECT * FROM student
-WHERE age IN (SELECT age FROM student WHERE age BETWEEN 25 AND 30);
+SELECT * FROM user
+WHERE id IN (SELECT user_id FROM `order`);
 ```
 
 ```sql
-SELECT * FROM student
-WHERE age < ANY (SELECT age FROM user);
+SELECT * FROM user
+WHERE id < ANY (SELECT user_id FROM `order`);
 ```
 
 ```sql
-SELECT * FROM student
-WHERE age < ALL (SELECT age FROM user);
+SELECT * FROM user
+WHERE id < ALL (SELECT user_id FROM `order`);
 ```
 
 ---
@@ -223,11 +240,9 @@ WHERE age < ALL (SELECT age FROM user);
 ## 🧮 Aggregate Functions
 
 ```sql
-SELECT MIN(age) FROM student;
-SELECT MAX(age) FROM student;
-SELECT SUM(age) FROM student;
-SELECT AVG(age) FROM student;
-SELECT COUNT(id) FROM student;
+SELECT COUNT(id) FROM user;
+SELECT AVG(amount) FROM `order`;
+SELECT SUM(amount) FROM payment;
 ```
 
 ---
@@ -235,53 +250,99 @@ SELECT COUNT(id) FROM student;
 ## 🧩 NULL Handling
 
 ```sql
-SELECT age + IFNULL(bio,1000) FROM student;
-SELECT age + COALESCE(bio,1000) FROM student;
+SELECT IFNULL(bio,'No bio') FROM profile;
+SELECT COALESCE(city,'Unknown') FROM profile;
 ```
+
+---
+
+## 🔗 Foreign Keys & Relationships
+
+### What is FOREIGN KEY?
+
+```text
+FOREIGN KEY ensures referential integrity
+```
+
+* Prevents orphan records
+* Enforces relationships between tables
+
+### Common Naming Convention
+
+```text
+user_id → references user(id)
+order_id → references order(id)
+```
+
+### Relationship Types
+
+| Type         | Example         |
+| ------------ | --------------- |
+| One-to-One   | user ↔ profile  |
+| One-to-Many  | user → order    |
+| Many-to-Many | order ↔ product |
+
+---
+
+## 🔀 JOINs (INNER, LEFT, RIGHT, OUTER)
+
+### LEFT JOIN (recommended)
+
+```sql
+SELECT
+  user.id,
+  user.fullname,
+  `order`.id,
+  `order`.amount,
+  payment.invoice_number
+FROM user
+LEFT JOIN `order`
+  ON user.id = `order`.user_id
+LEFT JOIN payment
+  ON `order`.id = payment.order_id;
+```
+
+✔ returns all users
+✔ even if order or payment does not exist
+
+---
+
+### INNER JOIN
+
+```sql
+SELECT *
+FROM user
+INNER JOIN profile
+ON user.id = profile.user_id;
+```
+
+✔ only matched records
+
+---
+
+### Implicit JOIN (OLD – not recommended)
+
+```sql
+SELECT *
+FROM user, profile
+WHERE user.id = profile.user_id;
+```
+
+❌ harder to read
+❌ error-prone with multiple tables
 
 ---
 
 ## 🔥 Triggers
-
-### BEFORE INSERT Trigger
-
-```sql
-CREATE TRIGGER before_insert_user
-BEFORE INSERT ON user
-FOR EACH ROW
-BEGIN
-  IF NEW.city IS NULL THEN
-    SET NEW.city = 'Tehran';
-  END IF;
-END;
-```
-
----
-
-### AFTER INSERT Trigger
-
-```sql
-CREATE TRIGGER after_insert_user
-AFTER INSERT ON user
-FOR EACH ROW
-BEGIN
-  INSERT INTO student(age)
-  VALUES (NEW.age);
-END;
-```
-
----
-
-### AFTER UPDATE Trigger (Validation)
 
 ```sql
 CREATE TRIGGER after_update_user
 AFTER UPDATE ON user
 FOR EACH ROW
 BEGIN
-  IF (NEW.age > OLD.age) THEN
+  IF NEW.id < OLD.id THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT = 'new age is bigger than old one.';
+    SET MESSAGE_TEXT='Invalid update';
   END IF;
 END;
 ```
@@ -291,29 +352,19 @@ END;
 ## 🚀 Indexes & Performance
 
 ```sql
-CREATE TABLE contact (
-  id INT PRIMARY KEY AUTO_INCREMENT,
-  fullname VARCHAR(50) NOT NULL,
-  mobile VARCHAR(20),
-  INDEX (fullname)
-);
-```
-
-```sql
-CREATE INDEX idx_mobile ON contact(mobile);
-DROP INDEX idx_mobile ON contact;
+CREATE INDEX idx_username ON user(username);
+DROP INDEX idx_username ON user;
 ```
 
 ---
 
 ## ✅ Notes
 
-* `ENUM` → one value
-* `SET` → multiple values
-* `TRIGGER` runs automatically on INSERT / UPDATE / DELETE
-* `BEFORE` → data validation
-* `AFTER` → logging / side effects
-* `SIGNAL` is used to throw custom errors
-* Indexes improve SELECT performance
-
+* Always prefer **explicit JOIN**
+* `LEFT JOIN` is best for reports
+* Foreign keys protect data integrity
+* `ENUM` = single value
+* `SET` = multiple values
+* `TRIGGER` runs automatically
+* Indexes speed up SELECT, slow down INSERT/UPDATE
 
