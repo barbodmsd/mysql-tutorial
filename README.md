@@ -1,5 +1,9 @@
 # 📘 MySQL Tutorial
 
+A complete, clean, and step-by-step MySQL tutorial for learning database fundamentals.
+
+---
+
 ## 📑 Table of Contents
 
 * [Database Management](#-database-management)
@@ -23,10 +27,21 @@
 
 ## 📦 Database Management
 
+Used to create, select, and delete databases.
+
 ```sql
 SHOW DATABASES;
+```
+
+```sql
 CREATE DATABASE IF NOT EXISTS nodejs;
+```
+
+```sql
 USE nodejs;
+```
+
+```sql
 DROP DATABASE IF EXISTS nodejs;
 ```
 
@@ -39,6 +54,8 @@ COLLATE utf8mb4_0900_ai_ci;
 ---
 
 ## 🧱 Tables
+
+Define database structure.
 
 ### User
 
@@ -134,6 +151,8 @@ CREATE TABLE order_items (
 
 ### ENUM
 
+Stores **only one value** from a predefined list.
+
 ```sql
 CREATE TABLE ticket (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -142,44 +161,90 @@ CREATE TABLE ticket (
 );
 ```
 
+---
+
 ### SET
+
+Stores **multiple values** from a predefined list.
 
 ```sql
 CREATE TABLE student_course (
   id INT PRIMARY KEY AUTO_INCREMENT,
-  course_list SET('NodeJS','NestJS','JS','NextJS','ReactJS','MongoDB')
+  course_list SET(
+    'NodeJS','NestJS','JS','NextJS','ReactJS','MongoDB'
+  )
 );
+```
+
+#### Insert data into SET
+
+```sql
+INSERT INTO student_course (course_list)
+VALUES
+('NodeJS,JS,MongoDB'),
+('ReactJS,NextJS'),
+('JS,NestJS,MongoDB');
 ```
 
 ---
 
 ## ✏️ Alter Table
 
+Used to modify table structure.
+
+### Add column
+
 ```sql
-ALTER TABLE product ADD details VARCHAR(85);
-ALTER TABLE product DROP COLUMN details;
-ALTER TABLE product MODIFY description VARCHAR(200);
+ALTER TABLE user
+ADD details VARCHAR(50);
+```
+
+### Drop column
+
+```sql
+ALTER TABLE user
+DROP COLUMN details;
+```
+
+### Modify column
+
+```sql
+ALTER TABLE product
+MODIFY description VARCHAR(200);
 ```
 
 ---
 
 ## 🧩 CRUD Operations
 
-```sql
-INSERT INTO user (fullname,username,password)
-VALUES ('Ali','ali_dev','1234');
-```
+### Insert
 
 ```sql
-SELECT * FROM user;
+INSERT INTO user (fullname, username, password)
+VALUES ('Ali', 'ali_dev', '1234');
 ```
 
-```sql
-UPDATE user SET fullname='Ali Dev' WHERE id=1;
-```
+### Select
 
 ```sql
-DELETE FROM user WHERE id=1;
+SELECT *
+FROM user;
+```
+
+### Update
+
+```sql
+UPDATE user
+SET fullname = 'Ali Dev'
+WHERE id = 1;
+```
+
+### Delete
+
+```sql
+DELETE
+FROM user
+WHERE id = 1;
 ```
 
 ---
@@ -188,6 +253,9 @@ DELETE FROM user WHERE id=1;
 
 ```sql
 DELETE FROM student_course;
+```
+
+```sql
 TRUNCATE TABLE student_course;
 ```
 
@@ -196,15 +264,21 @@ TRUNCATE TABLE student_course;
 ## 🔎 Filtering Data (WHERE)
 
 ```sql
-SELECT * FROM user WHERE fullname LIKE '%a%';
+SELECT *
+FROM user
+WHERE fullname LIKE '%a%';
 ```
 
 ```sql
-SELECT * FROM user WHERE id BETWEEN 1 AND 10;
+SELECT *
+FROM user
+WHERE id BETWEEN 1 AND 10;
 ```
 
 ```sql
-SELECT * FROM user WHERE id IN (1,2,3);
+SELECT *
+FROM user
+WHERE id IN (1, 2, 3);
 ```
 
 ---
@@ -212,8 +286,15 @@ SELECT * FROM user WHERE id IN (1,2,3);
 ## 📊 Sorting Data (ORDER BY)
 
 ```sql
-SELECT * FROM user ORDER BY fullname ASC;
-SELECT * FROM user ORDER BY id DESC;
+SELECT *
+FROM user
+ORDER BY fullname ASC;
+```
+
+```sql
+SELECT *
+FROM user
+ORDER BY id DESC;
 ```
 
 ---
@@ -221,18 +302,30 @@ SELECT * FROM user ORDER BY id DESC;
 ## 🧠 Subqueries (IN, ANY, ALL)
 
 ```sql
-SELECT * FROM user
-WHERE id IN (SELECT user_id FROM `order`);
+SELECT *
+FROM user
+WHERE id IN (
+  SELECT user_id
+  FROM `order`
+);
 ```
 
 ```sql
-SELECT * FROM user
-WHERE id < ANY (SELECT user_id FROM `order`);
+SELECT *
+FROM user
+WHERE id < ANY (
+  SELECT user_id
+  FROM `order`
+);
 ```
 
 ```sql
-SELECT * FROM user
-WHERE id < ALL (SELECT user_id FROM `order`);
+SELECT *
+FROM user
+WHERE id < ALL (
+  SELECT user_id
+  FROM `order`
+);
 ```
 
 ---
@@ -240,9 +333,18 @@ WHERE id < ALL (SELECT user_id FROM `order`);
 ## 🧮 Aggregate Functions
 
 ```sql
-SELECT COUNT(id) FROM user;
-SELECT AVG(amount) FROM `order`;
-SELECT SUM(amount) FROM payment;
+SELECT COUNT(id)
+FROM user;
+```
+
+```sql
+SELECT AVG(amount)
+FROM `order`;
+```
+
+```sql
+SELECT SUM(amount)
+FROM payment;
 ```
 
 ---
@@ -250,29 +352,21 @@ SELECT SUM(amount) FROM payment;
 ## 🧩 NULL Handling
 
 ```sql
-SELECT IFNULL(bio,'No bio') FROM profile;
-SELECT COALESCE(city,'Unknown') FROM profile;
+SELECT IFNULL(bio, 'No bio')
+FROM profile;
+```
+
+```sql
+SELECT COALESCE(city, 'Unknown')
+FROM profile;
 ```
 
 ---
 
 ## 🔗 Foreign Keys & Relationships
 
-### What is FOREIGN KEY?
-
-```text
-FOREIGN KEY ensures referential integrity
-```
-
-* Prevents orphan records
-* Enforces relationships between tables
-
-### Common Naming Convention
-
-```text
-user_id → references user(id)
-order_id → references order(id)
-```
+* Prevent orphan records
+* Enforce data integrity
 
 ### Relationship Types
 
@@ -286,13 +380,14 @@ order_id → references order(id)
 
 ## 🔀 JOINs (INNER, LEFT, RIGHT, OUTER)
 
-### LEFT JOIN (recommended)
+### LEFT JOIN
+
+Returns all rows from the left table.
 
 ```sql
 SELECT
   user.id,
   user.fullname,
-  `order`.id,
   `order`.amount,
   payment.invoice_number
 FROM user
@@ -302,25 +397,22 @@ LEFT JOIN payment
   ON `order`.id = payment.order_id;
 ```
 
-✔ returns all users
-✔ even if order or payment does not exist
-
 ---
 
 ### INNER JOIN
+
+Returns only matching rows.
 
 ```sql
 SELECT *
 FROM user
 INNER JOIN profile
-ON user.id = profile.user_id;
+  ON user.id = profile.user_id;
 ```
-
-✔ only matched records
 
 ---
 
-### Implicit JOIN (OLD – not recommended)
+### Implicit JOIN (Not Recommended)
 
 ```sql
 SELECT *
@@ -328,12 +420,11 @@ FROM user, profile
 WHERE user.id = profile.user_id;
 ```
 
-❌ harder to read
-❌ error-prone with multiple tables
-
 ---
 
 ## 🔥 Triggers
+
+Triggers execute automatically on table events.
 
 ```sql
 CREATE TRIGGER after_update_user
@@ -342,7 +433,7 @@ FOR EACH ROW
 BEGIN
   IF NEW.id < OLD.id THEN
     SIGNAL SQLSTATE '45000'
-    SET MESSAGE_TEXT='Invalid update';
+    SET MESSAGE_TEXT = 'Invalid update';
   END IF;
 END;
 ```
@@ -352,19 +443,24 @@ END;
 ## 🚀 Indexes & Performance
 
 ```sql
-CREATE INDEX idx_username ON user(username);
-DROP INDEX idx_username ON user;
+CREATE INDEX idx_username
+ON user(username);
+```
+
+```sql
+DROP INDEX idx_username
+ON user;
 ```
 
 ---
 
 ## ✅ Notes
 
-* Always prefer **explicit JOIN**
-* `LEFT JOIN` is best for reports
-* Foreign keys protect data integrity
-* `ENUM` = single value
-* `SET` = multiple values
-* `TRIGGER` runs automatically
-* Indexes speed up SELECT, slow down INSERT/UPDATE
+* Prefer **explicit JOIN**
+* `LEFT JOIN` is best for reporting
+* `ENUM` → single value
+* `SET` → multiple values
+* `FOREIGN KEY` ensures integrity
+* Indexes speed up SELECT but slow down writes
+
 
