@@ -49,6 +49,7 @@ COLLATE utf8mb4_0900_ai_ci;
 * `USE` selects DB to work with
 * `DROP DATABASE` removes the DB
 * `utf8mb4` supports all Unicode characters
+* `utf8mb4_0900_ai_ci` sort EN and FA languages in columns;
 
 ---
 
