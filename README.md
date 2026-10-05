@@ -14,7 +14,7 @@
 * [Subqueries (IN, ANY, ALL)](#-subqueries-in-any-all)
 * [Aggregate Functions](#-aggregate-functions)
 * [NULL Handling](#-null-handling)
-* [JOINs (INNER, LEFT, RIGHT, FULL)](#-joins-inner-left-right-full)
+* [JOINs (INNER, LEFT, RIGHT, FULL)](#-joins)
 * [Triggers](#-triggers)
 * [Notes](#-notes)
 
