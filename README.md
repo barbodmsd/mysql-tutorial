@@ -4,7 +4,7 @@
 
 * [Database Management](#-database-management)
 * [Tables & Relationships](#-tables--relationships)
-* [Special Data Types (ENUM, SET)](#-special-data-types-enum-set)
+* [Special Data Types (ENUM, SET)](#-special-data-types)
 * [ALTER TABLE](#-alter-table)
 * [Indexes](#-indexes)
 * [CRUD Operations](#-crud-operations)
