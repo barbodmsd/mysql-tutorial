@@ -6,7 +6,7 @@
 * [Tables & Relationships](#-tables--relationships)
 * [Special Data Types (ENUM, SET)](#-special-data-types)
 * [ALTER TABLE](#-alter-table)
-* [Indexes](#-indexes)
+* [Indexes](#-Indexes)
 * [CRUD Operations](#-crud-operations)
 * [DELETE vs TRUNCATE](#️-delete-vs-truncate)
 * [Filtering Data (WHERE)](#-filtering-data-where)
